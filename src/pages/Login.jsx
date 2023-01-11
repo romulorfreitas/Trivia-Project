@@ -24,6 +24,11 @@ class Login extends React.Component {
     });
   };
 
+settingBtn = () => {
+  const { dispatch, history } = this.props;
+  history.push('/settings');
+}
+
   enterButton = async () => {
     const { dispatch, history } = this.props;
     const { email } = this.state;
@@ -36,6 +41,8 @@ class Login extends React.Component {
     });
     history.push('/game');
   };
+
+
 
   render() {
     const { isEnterButtonDisabled } = this.state;
@@ -71,6 +78,14 @@ class Login extends React.Component {
           onClick={ this.enterButton }
         >
           Play
+        </button>
+        <button
+          data-testid='btn-settings'
+          className="button"
+          type="button"
+          onClick={ this.settingBtn }
+        >
+          Configuração
         </button>
       </div>
     );
