@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import getCurrentValue from '../services/apiTrivia';
 
 class Login extends React.Component {
   state = {
@@ -23,14 +24,17 @@ class Login extends React.Component {
     });
   };
 
-  enterButton = () => {
-    const { dispatch } = this.props;
+  enterButton = async () => {
+    const { dispatch, history } = this.props;
     const { email } = this.state;
-
+    const response = await getCurrentValue();
+    // const responseToken = await triviaRequest(response.token);
+    localStorage.setItem('token', response.token);
     dispatch({
       type: 'LOGIN',
       email,
     });
+    history.push('/game');
   };
 
   render() {
@@ -75,9 +79,9 @@ class Login extends React.Component {
 
 Login.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  // history: PropTypes.shape({
-  //   push: PropTypes.func,
-  // }).isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func,
+  }).isRequired,
 };
 
 export default connect()(Login);
