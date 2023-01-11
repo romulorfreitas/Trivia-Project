@@ -15,8 +15,8 @@ class Login extends React.Component {
       const { email, name } = this.state;
 
       const releaseButton = !email.includes('@', 1)
-      || !name.length > 0
-      || !email.includes('.com', 1);
+        || !name.length > 0
+        || !email.includes('.com', 1);
 
       this.setState({
         isEnterButtonDisabled: releaseButton,
@@ -24,10 +24,10 @@ class Login extends React.Component {
     });
   };
 
-settingBtn = () => {
-  const { dispatch, history } = this.props;
-  history.push('/settings');
-}
+  settingBtn = () => {
+    const { history } = this.props;
+    history.push('/settings');
+  };
 
   enterButton = async () => {
     const { dispatch, history } = this.props;
@@ -41,8 +41,6 @@ settingBtn = () => {
     });
     history.push('/game');
   };
-
-
 
   render() {
     const { isEnterButtonDisabled } = this.state;
@@ -80,7 +78,7 @@ settingBtn = () => {
           Play
         </button>
         <button
-          data-testid='btn-settings'
+          data-testid="btn-settings"
           className="button"
           type="button"
           onClick={ this.settingBtn }
