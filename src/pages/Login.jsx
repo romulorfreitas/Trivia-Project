@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import md5 from 'crypto-js/md5';
 import getCurrentValue from '../services/apiTrivia';
 
 class Login extends React.Component {
@@ -31,13 +32,19 @@ class Login extends React.Component {
 
   enterButton = async () => {
     const { dispatch, history } = this.props;
-    const { email } = this.state;
+    const { email, name } = this.state;
     const response = await getCurrentValue();
     // const responseToken = await triviaRequest(response.token);
     localStorage.setItem('token', response.token);
+
+    const convertEmail = md5(email).toString();
+    const responseGravatar = `https://www.gravatar.com/avatar/${convertEmail}`;
+
     dispatch({
       type: 'LOGIN',
       email,
+      name,
+      responseGravatar,
     });
     history.push('/game');
   };
