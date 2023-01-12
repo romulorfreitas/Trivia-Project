@@ -6,6 +6,7 @@ const getCurrentValue = async () => {
 };
 
 export const triviaRequest = async (token) => {
+//   const invalidToken = 'invalidToken';
   const response = await fetch(`https://opentdb.com/api.php?amount=5&token=${token}`);
   const json = await response.json();
 
