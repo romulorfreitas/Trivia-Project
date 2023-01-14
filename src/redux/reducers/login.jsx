@@ -4,7 +4,6 @@ const INITIAL_STATE = {
   email: '',
   image: '',
   name: '',
-  responseToken: {},
 };
 
 const user = (state = INITIAL_STATE, action) => {
@@ -14,7 +13,6 @@ const user = (state = INITIAL_STATE, action) => {
       email: action.email,
       name: action.name,
       image: action.responseGravatar,
-      responseToken: action.responseToken,
     };
   default:
     return state;
