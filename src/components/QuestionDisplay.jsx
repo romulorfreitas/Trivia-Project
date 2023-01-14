@@ -10,7 +10,8 @@ class QuestionDisplay extends Component {
     allAnswers: [],
     questionNumber: 0,
     answerNumber: 0,
-
+    buttonNext: false,
+    buttonStyle: false,
   };
 
   componentDidMount() {
@@ -18,6 +19,7 @@ class QuestionDisplay extends Component {
   }
 
   randomAnswers = () => {
+    this.setState({ buttonNext: false });
     const { responseToken: { results } } = this.props;
     const { answerNumber } = this.state;
 
@@ -35,7 +37,6 @@ class QuestionDisplay extends Component {
 
     const numberQuestion = answerNumber > THREE ? 0 : answerNumber + 1;
     this.setState({ answerNumber: numberQuestion });
-    console.log(results);
   };
 
   numberWrongAnswer = () => {
@@ -46,13 +47,38 @@ class QuestionDisplay extends Component {
   handleClick = () => {
     const { questionNumber } = this.state;
     const numberQuestion = questionNumber > THREE ? 0 : questionNumber + 1;
-    this.setState({ questionNumber: numberQuestion });
+    this.setState({ questionNumber: numberQuestion, buttonStyle: false });
     this.randomAnswers();
+  };
+
+  handleAnswerClick = ({ target }) => {
+    const selectedAnswer = target.parentElement.innerText;
+    const { allAnswers } = this.state;
+
+    allAnswers.filter((element) => element === selectedAnswer
+    && this.setState({ buttonNext: true }));
+
+    // const correctAnswer = document.querySelectorAll('.correct_answer');
+    this.setState({ buttonStyle: true });
+  };
+
+  CollorBorder = (item) => {
+    const { responseToken: { results } } = this.props;
+    const { questionNumber, buttonStyle } = this.state;
+
+    const answerCorrect = results[questionNumber].correct_answer;
+
+    if (buttonStyle) {
+      if (item === answerCorrect) {
+        return 'solid rgb(6, 240, 15) 3px';
+      }
+      return 'solid red 3px';
+    }
   };
 
   render() {
     const { responseToken } = this.props;
-    const { allAnswers, questionNumber } = this.state;
+    const { allAnswers, questionNumber, buttonNext } = this.state;
 
     return (
       <div>
@@ -78,18 +104,20 @@ class QuestionDisplay extends Component {
               }
               type="button"
               onClick={ this.handleAnswerClick }
+              style={ { border: this.CollorBorder(element) } }
             >
               { element }
             </button>
           </div>))}
         <br />
-        <button
-          data-testid="btn-next"
-          type="button"
-          onClick={ this.handleClick }
-        >
-          Next
-        </button>
+        {buttonNext && (
+          <button
+            data-testid="btn-next"
+            type="button"
+            onClick={ this.handleClick }
+          >
+            Next
+          </button>)}
       </div>
     );
   }
