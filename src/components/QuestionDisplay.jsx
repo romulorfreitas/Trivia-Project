@@ -8,54 +8,80 @@ let numberIndex = 0 - 1;
 class QuestionDisplay extends Component {
   state = {
     allAnswers: [],
-    question: 0,
+    questionNumber: 0,
+    answerNumber: 0,
+
   };
+
+  componentDidMount() {
+    this.randomAnswers();
+  }
 
   randomAnswers = () => {
     const { responseToken: { results } } = this.props;
-    const { allAnswers, question } = this.state;
-    allAnswers.push([results[question].correct_answer,
-      ...results[question].incorrect_answers]);
+    const { answerNumber } = this.state;
+
+    const arrayOrigin = ([results[answerNumber].correct_answer,
+      ...results[answerNumber].incorrect_answers]);
+
+    const arrayRamdom = [];
+
+    arrayOrigin.forEach((element) => {
+      arrayRamdom.splice(Math.floor(Math.random()
+      * arrayOrigin.length), 0, element);
+    });
+
+    this.setState({ allAnswers: arrayRamdom });
+
+    const numberQuestion = answerNumber > THREE ? 0 : answerNumber + 1;
+    this.setState({ answerNumber: numberQuestion });
+    console.log(results);
   };
 
   numberWrongAnswer = () => {
-    numberIndex = numberIndex > THREE ? 0 : numberIndex + 1;
+    numberIndex = numberIndex > 1 ? 0 : numberIndex + 1;
     return numberIndex;
   };
 
   handleClick = () => {
-    let { question } = this.state;
-    const numberQuestion = question > THREE ? 0 : question += 1;
-    this.setState({ question: numberQuestion, allAnswers: [] });
+    const { questionNumber } = this.state;
+    const numberQuestion = questionNumber > THREE ? 0 : questionNumber + 1;
+    this.setState({ questionNumber: numberQuestion });
+    this.randomAnswers();
   };
 
   render() {
-    this.randomAnswers();
     const { responseToken } = this.props;
-    const { allAnswers, question } = this.state;
+    const { allAnswers, questionNumber } = this.state;
 
     return (
       <div>
         <p
           data-testid="question-category"
         >
-          { responseToken.results[question].category }
+          { responseToken.results[questionNumber].category }
 
         </p>
-        <p data-testid="question-text">{ responseToken.results[question].question }</p>
-        {allAnswers.map((valueQuestion) => (valueQuestion.map((element, index) => (
-          <button
-            key={ `${valueQuestion} = ${index}` }
-            data-testid={
-              element === responseToken.results[question].correct_answer
-                ? 'correct-answer'
-                : `wrong-answer-${this.numberWrongAnswer()}`
-            }
-            type="button"
-          >
-            { element }
-          </button>))))}
+        <p data-testid="question-text">
+          {
+            responseToken.results[questionNumber].question
+          }
 
+        </p>
+        {allAnswers.map((element, index) => (
+          <div key={ `${element} = ${index}` } data-testid="answer-options">
+            <button
+              data-testid={
+                element === responseToken.results[questionNumber].correct_answer
+                  ? 'correct-answer'
+                  : `wrong-answer-${this.numberWrongAnswer()}`
+              }
+              type="button"
+              onClick={ this.handleAnswerClick }
+            >
+              { element }
+            </button>
+          </div>))}
         <br />
         <button
           data-testid="btn-next"
@@ -79,8 +105,4 @@ QuestionDisplay.propTypes = {
   }).isRequired,
 };
 
-const mapStateToProps = (state) => ({
-  responseToken: state.login.responseToken,
-});
-
-export default connect(mapStateToProps)(QuestionDisplay);
+export default connect()(QuestionDisplay);
