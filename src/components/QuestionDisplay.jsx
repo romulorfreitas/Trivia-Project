@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 const THREE = 3;
 let numberIndex = 0 - 1;
+const milliseconds = 1000;
 
 class QuestionDisplay extends Component {
   state = {
@@ -12,25 +13,48 @@ class QuestionDisplay extends Component {
     answerNumber: 0,
     buttonNext: false,
     buttonStyle: false,
+    time: 30,
+    disabled: false,
   };
 
   componentDidMount() {
     this.randomAnswers();
+    this.startTimer();
+    clearInterval(this.intervalId);
   }
+
+  startTimer = () => {
+    const intervalId = setInterval(() => {
+      const { time } = this.state;
+      if (time > 0) {
+        this.setState((prevState) => ({ time: prevState.time - 1 }));
+      } else {
+        this.setState({ disabled: true });
+        clearInterval(intervalId);
+      }
+    }, milliseconds);
+  };
 
   randomAnswers = () => {
     this.setState({ buttonNext: false });
-    const { responseToken: { results } } = this.props;
+    const {
+      responseToken: { results },
+    } = this.props;
     const { answerNumber } = this.state;
 
-    const arrayOrigin = ([results[answerNumber].correct_answer,
-      ...results[answerNumber].incorrect_answers]);
+    const arrayOrigin = [
+      results[answerNumber].correct_answer,
+      ...results[answerNumber].incorrect_answers,
+    ];
 
     const arrayRamdom = [];
 
     arrayOrigin.forEach((element) => {
-      arrayRamdom.splice(Math.floor(Math.random()
-      * arrayOrigin.length), 0, element);
+      arrayRamdom.splice(
+        Math.floor(Math.random() * arrayOrigin.length),
+        0,
+        element,
+      );
     });
 
     this.setState({ allAnswers: arrayRamdom });
@@ -55,15 +79,19 @@ class QuestionDisplay extends Component {
     const selectedAnswer = target.parentElement.innerText;
     const { allAnswers } = this.state;
 
-    allAnswers.filter((element) => element === selectedAnswer
-    && this.setState({ buttonNext: true }));
+    allAnswers.filter(
+      (element) => element === selectedAnswer
+        && this.setState({ buttonNext: true, disabled: false }),
+    );
 
     // const correctAnswer = document.querySelectorAll('.correct_answer');
     this.setState({ buttonStyle: true });
   };
 
   CollorBorder = (item) => {
-    const { responseToken: { results } } = this.props;
+    const {
+      responseToken: { results },
+    } = this.props;
     const { questionNumber, buttonStyle } = this.state;
 
     const answerCorrect = results[questionNumber].correct_answer;
@@ -78,21 +106,15 @@ class QuestionDisplay extends Component {
 
   render() {
     const { responseToken } = this.props;
-    const { allAnswers, questionNumber, buttonNext } = this.state;
+    const { allAnswers, questionNumber, buttonNext, time, disabled } = this.state;
 
     return (
       <div>
-        <p
-          data-testid="question-category"
-        >
-          { responseToken.results[questionNumber].category }
-
+        <p data-testid="question-category">
+          {responseToken.results[questionNumber].category}
         </p>
         <p data-testid="question-text">
-          {
-            responseToken.results[questionNumber].question
-          }
-
+          {responseToken.results[questionNumber].question}
         </p>
         {allAnswers.map((element, index) => (
           <div key={ `${element} = ${index}` } data-testid="answer-options">
@@ -105,31 +127,40 @@ class QuestionDisplay extends Component {
               type="button"
               onClick={ this.handleAnswerClick }
               style={ { border: this.CollorBorder(element) } }
+              disabled={ disabled }
             >
-              { element }
+              {element}
             </button>
-          </div>))}
+          </div>
+        ))}
         <br />
+        <div>
+          <p>{`Time left: ${time} seconds`}</p>
+        </div>
         {buttonNext && (
           <button
             data-testid="btn-next"
             type="button"
             onClick={ this.handleClick }
+            disabled={ disabled }
           >
             Next
-          </button>)}
+          </button>
+        )}
       </div>
     );
   }
 }
 QuestionDisplay.propTypes = {
   responseToken: PropTypes.shape({
-    results: PropTypes.arrayOf(PropTypes.shape({
-      category: PropTypes.string,
-      question: PropTypes.string,
-      incorrect_answers: PropTypes.arrayOf,
-      correct_answer: PropTypes.string,
-    })),
+    results: PropTypes.arrayOf(
+      PropTypes.shape({
+        category: PropTypes.string,
+        question: PropTypes.string,
+        incorrect_answers: PropTypes.arrayOf(PropTypes.string),
+        correct_answer: PropTypes.string,
+      }),
+    ),
   }).isRequired,
 };
 
