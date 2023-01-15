@@ -13,10 +13,10 @@ class Feedback extends Component {
         <img src={ image } data-testid="header-profile-picture" alt="avatar img" />
         <h2 data-testid="header-player-name">{ name }</h2>
         <h2 data-testid="header-score">
-          Score:
-          {' '}
           { score }
         </h2>
+        <h1 data-testid="feedback-total-score">{ score }</h1>
+        <h3 data-testid="feedback-total-question">{ assertions }</h3>
         {
           assertions >= THREE
             ? <h1 data-testid="feedback-text">Well Done!</h1>
@@ -38,7 +38,7 @@ const mapStateToProps = (state) => ({
   score: state.player.score,
   image: state.login.image,
   name: state.login.name,
-  assertions: state.player.rightQuestion,
+  assertions: state.player.assertions,
 });
 
 export default connect(mapStateToProps)(Feedback);
