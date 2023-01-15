@@ -5,6 +5,11 @@ import PropTypes from 'prop-types';
 const THREE = 3;
 
 class Feedback extends Component {
+  btnPlay = () => {
+    const { history } = this.props;
+    history.push('/');
+  };
+
   render() {
     const { score, image, name, assertions } = this.props;
     return (
@@ -22,6 +27,13 @@ class Feedback extends Component {
             ? <h1 data-testid="feedback-text">Well Done!</h1>
             : <h1 data-testid="feedback-text">Could be better...</h1>
         }
+        <button
+          type="button"
+          data-testid="btn-play-again"
+          onClick={ this.btnPlay }
+        >
+          Play
+        </button>
       </div>
     );
   }
@@ -32,6 +44,10 @@ Feedback.propTypes = {
   name: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,
   assertions: PropTypes.string.isRequired,
+
+  history: PropTypes.shape({
+    push: PropTypes.func,
+  }).isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -41,4 +57,6 @@ const mapStateToProps = (state) => ({
   assertions: state.player.assertions,
 });
 
-export default connect(mapStateToProps)(Feedback);
+const mapDispatchToProps = (dispatch) => ({ dispatch });
+
+export default connect(mapStateToProps, mapDispatchToProps)(Feedback);
