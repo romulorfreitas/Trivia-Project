@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 
 const THREE = 3;
 const TEN = 10;
@@ -10,6 +11,7 @@ const FOUR = 4;
 let numberIndex = 0 - 1;
 const milliseconds = 1000;
 let score = 0;
+let assertions = 0;
 
 class QuestionDisplay extends Component {
   state = {
@@ -68,7 +70,7 @@ class QuestionDisplay extends Component {
     this.setState({ answerNumber: numberQuestion });
   };
 
-  numberWrongAnswer = () => {
+  numberWrongAnswer = async () => {
     numberIndex = numberIndex > 1 ? 0 : numberIndex + 1;
     return numberIndex;
   };
@@ -79,8 +81,6 @@ class QuestionDisplay extends Component {
     const numberQuestion = questionNumber > THREE ? 0 : questionNumber + 1;
     this.setState({ questionNumber: numberQuestion, buttonStyle: false });
     this.randomAnswers();
-
-    // console.log(questionNumber);
 
     if (+questionNumber === FOUR) {
       history.push('/feedback');
@@ -108,10 +108,12 @@ class QuestionDisplay extends Component {
 
     if (selectedAnswer === results[questionNumber].correct_answer) {
       score += TEN + (punctuationDifficulty[difficultyAnswer] * time);
+      assertions += 1;
     }
     dispatch({
       type: 'PLAYER',
       score,
+      assertions,
     });
   };
 
@@ -183,6 +185,7 @@ class QuestionDisplay extends Component {
     );
   }
 }
+
 QuestionDisplay.propTypes = {
   dispatch: PropTypes.func.isRequired,
   responseToken: PropTypes.shape({
@@ -200,4 +203,6 @@ QuestionDisplay.propTypes = {
   }).isRequired,
 };
 
-export default connect()(QuestionDisplay);
+const mapDispatchToProps = (dispatch) => ({ dispatch });
+
+export default connect(null, mapDispatchToProps)(withRouter(QuestionDisplay));
