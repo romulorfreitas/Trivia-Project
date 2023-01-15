@@ -26,13 +26,17 @@ class Game extends Component {
   }
 
   render() {
-    const { name, image } = this.props;
+    const { name, image, score } = this.props;
     const { responseToken, loading } = this.state;
     return (
       <div className="App-header">
         <img src={ image } data-testid="header-profile-picture" alt="avatar img" />
         <h2>Trybe</h2>
-        <h3 data-testid="header-score">Score: 0</h3>
+        <h2 data-testid="header-score">
+          Score:
+          {' '}
+          { score }
+        </h2>
         <h2 data-testid="header-player-name">{ name }</h2>
         { loading ? <QuestionDisplay responseToken={ responseToken } /> : <Loading /> }
       </div>
@@ -43,6 +47,7 @@ class Game extends Component {
 Game.propTypes = {
   name: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,
+  score: PropTypes.number.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
@@ -51,6 +56,7 @@ Game.propTypes = {
 const mapStateToProps = (state) => ({
   name: state.login.name,
   image: state.login.image,
+  score: state.player.score,
 });
 
 export default connect(mapStateToProps)(Game);
