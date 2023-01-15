@@ -48,6 +48,10 @@ describe('Testando a página Login', () => {
 
         expect(btnPlay).toBeEnabled();
 
+        userEvent.type(userName, '');
+
+        expect(btnPlay).toBeEnabled();
+      
     });
 
 
