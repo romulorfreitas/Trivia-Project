@@ -99,7 +99,6 @@ class QuestionDisplay extends Component {
     allAnswers.filter((element) => element === selectedAnswer
     && this.setState({ buttonNext: true, disabled: false }));
 
-
     this.setState({ buttonStyle: true });
     const punctuationDifficulty = {
       hard: 3,
@@ -145,8 +144,6 @@ class QuestionDisplay extends Component {
           data-testid="question-category"
         >
           { responseToken.results[questionNumber].category }
-
-
         </p>
         <p data-testid="question-text">
           {responseToken.results[questionNumber].question}
