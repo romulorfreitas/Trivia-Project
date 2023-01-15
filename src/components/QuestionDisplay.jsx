@@ -42,17 +42,24 @@ class QuestionDisplay extends Component {
 
   randomAnswers = () => {
     this.setState({ buttonNext: false });
-    const { responseToken: { results } } = this.props;
+    const {
+      responseToken: { results },
+    } = this.props;
     const { answerNumber } = this.state;
 
-    const arrayOrigin = ([results[answerNumber].correct_answer,
-      ...results[answerNumber].incorrect_answers]);
+    const arrayOrigin = [
+      results[answerNumber].correct_answer,
+      ...results[answerNumber].incorrect_answers,
+    ];
 
     const arrayRamdom = [];
 
     arrayOrigin.forEach((element) => {
-      arrayRamdom.splice(Math.floor(Math.random()
-      * arrayOrigin.length), 0, element);
+      arrayRamdom.splice(
+        Math.floor(Math.random() * arrayOrigin.length),
+        0,
+        element,
+      );
     });
 
     this.setState({ allAnswers: arrayRamdom });
@@ -92,6 +99,7 @@ class QuestionDisplay extends Component {
     allAnswers.filter((element) => element === selectedAnswer
     && this.setState({ buttonNext: true, disabled: false }));
 
+
     this.setState({ buttonStyle: true });
     const punctuationDifficulty = {
       hard: 3,
@@ -109,7 +117,9 @@ class QuestionDisplay extends Component {
   };
 
   CollorBorder = (item) => {
-    const { responseToken: { results } } = this.props;
+    const {
+      responseToken: { results },
+    } = this.props;
     const { questionNumber, buttonStyle } = this.state;
 
     const answerCorrect = results[questionNumber].correct_answer;
@@ -136,12 +146,10 @@ class QuestionDisplay extends Component {
         >
           { responseToken.results[questionNumber].category }
 
+
         </p>
         <p data-testid="question-text">
-          {
-            responseToken.results[questionNumber].question
-          }
-
+          {responseToken.results[questionNumber].question}
         </p>
         {allAnswers.map((element, index) => (
           <div key={ `${element} = ${index}` } data-testid="answer-options">
@@ -156,18 +164,24 @@ class QuestionDisplay extends Component {
               style={ { border: this.CollorBorder(element) } }
               disabled={ disabled }
             >
-              { element }
+              {element}
             </button>
-          </div>))}
+          </div>
+        ))}
         <br />
+        <div>
+          <p>{`Time left: ${time} seconds`}</p>
+        </div>
         {buttonNext && (
           <button
             data-testid="btn-next"
             type="button"
             onClick={ this.handleClick }
+            disabled={ disabled }
           >
             Next
-          </button>)}
+          </button>
+        )}
       </div>
     );
   }
@@ -182,6 +196,7 @@ QuestionDisplay.propTypes = {
       correct_answer: PropTypes.string,
       difficulty: PropTypes.string,
     })),
+
   }).isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
