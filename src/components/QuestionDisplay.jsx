@@ -202,7 +202,6 @@ QuestionDisplay.propTypes = {
 };
 
 const mapDispatchToProps = (dispatch) => ({ dispatch });
-
 const mapStateToProps = (state) => ({
   score: state.player.score,
 });
