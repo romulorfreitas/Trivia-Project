@@ -5,13 +5,16 @@ import { renderWithRouterAndRedux } from './renderWithRouterAndRedux';
 import Login from '../../pages/Login';
 import App from '../../App';
 import getCurrentValue from '../../services/apiTrivia';
-import Game from '../../pages/Game';
 
 const emailTest = 'tryber@teste.com';
 
 describe('Testando a página Login', () => {
     it('Verifica link da página', () => {
         const { history } = renderWithRouterAndRedux(<App />);
+
+        const nameInput = screen.getByTestId('input-player-name');
+        const emailInput = screen.getByTestId('input-gravatar-email');
+        expect(nameInput && emailInput).toBeInTheDocument();
 
         const { pathname } = history.location;
         expect(pathname).toBe('/');
@@ -36,7 +39,6 @@ describe('Testando a página Login', () => {
         const btnPlay = screen.getByRole('button', {
             name: /play/i
         });
-        // expect(btnPlay).toBeInTheDocument();
 
         const userName = screen.getByTestId('input-player-name');
         const userEmail = screen.getByTestId('input-gravatar-email');
