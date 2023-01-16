@@ -5,13 +5,11 @@ import { withRouter } from 'react-router-dom';
 
 const THREE = 3;
 const TEN = 10;
-// const FIVE = 5;
 const FOUR = 4;
-// const TWO = 2;
 let numberIndex = 0 - 1;
 const milliseconds = 1000;
-let score = 0;
 let assertions = 0;
+let test = 0;
 
 class QuestionDisplay extends Component {
   state = {
@@ -75,21 +73,8 @@ class QuestionDisplay extends Component {
     return numberIndex;
   };
 
-  handleClick = () => {
-    const { questionNumber } = this.state;
-    const { history } = this.props;
-    const numberQuestion = questionNumber > THREE ? 0 : questionNumber + 1;
-    this.setState({ questionNumber: numberQuestion, buttonStyle: false });
-    this.randomAnswers();
-
-    if (+questionNumber === FOUR) {
-      history.push('/feedback');
-    }
-  };
-
   handleAnswerClick = ({ target }) => {
-    const { dispatch } = this.props;
-    const { responseToken: { results } } = this.props;
+    const { responseToken: { results }, dispatch } = this.props;
     const { allAnswers, time, questionNumber } = this.state;
 
     const selectedAnswer = target.parentElement.innerText;
@@ -107,14 +92,27 @@ class QuestionDisplay extends Component {
     };
 
     if (selectedAnswer === results[questionNumber].correct_answer) {
-      score += TEN + (punctuationDifficulty[difficultyAnswer] * time);
+      test += TEN + (punctuationDifficulty[difficultyAnswer] * time);
       assertions += 1;
     }
     dispatch({
       type: 'PLAYER',
-      score,
+      score: test,
       assertions,
     });
+  };
+
+  handleClick = () => {
+    const { questionNumber } = this.state;
+    const { history } = this.props;
+    const numberQuestion = questionNumber > THREE ? 0 : questionNumber + 1;
+    this.setState({ questionNumber: numberQuestion, buttonStyle: false });
+    this.randomAnswers();
+
+    if (+questionNumber === FOUR) {
+      test = 0;
+      history.push('/feedback');
+    }
   };
 
   CollorBorder = (item) => {
@@ -205,4 +203,8 @@ QuestionDisplay.propTypes = {
 
 const mapDispatchToProps = (dispatch) => ({ dispatch });
 
-export default connect(null, mapDispatchToProps)(withRouter(QuestionDisplay));
+const mapStateToProps = (state) => ({
+  score: state.player.score,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(QuestionDisplay));

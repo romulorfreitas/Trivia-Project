@@ -31,6 +31,8 @@ class Login extends React.Component {
   };
 
   enterButton = async () => {
+    const score = 0;
+    const assertions = 0;
     const { dispatch, history } = this.props;
     const { email, name } = this.state;
     const response = await getCurrentValue();
@@ -45,6 +47,13 @@ class Login extends React.Component {
       name,
       responseGravatar,
     });
+
+    dispatch({
+      type: 'PLAYER',
+      score,
+      assertions,
+    });
+
     history.push('/game');
   };
 

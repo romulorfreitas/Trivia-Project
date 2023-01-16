@@ -3,8 +3,21 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 const THREE = 3;
+const players = [];
 
 class Feedback extends Component {
+  componentDidMount() {
+    const { score, image, name } = this.props;
+    const player = {
+      score,
+      image,
+      name,
+    };
+
+    players.push(player);
+    localStorage.setItem('players', JSON.stringify(players));
+  }
+
   btnPlay = () => {
     const { history } = this.props;
     history.push('/');
