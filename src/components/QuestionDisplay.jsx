@@ -7,7 +7,6 @@ const THREE = 3;
 const TEN = 10;
 // const FIVE = 5;
 const FOUR = 4;
-// const TWO = 2;
 let numberIndex = 0 - 1;
 const milliseconds = 1000;
 let score = 0;
